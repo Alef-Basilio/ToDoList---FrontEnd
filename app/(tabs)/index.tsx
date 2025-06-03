@@ -1,75 +1,102 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useState } from 'react';
+import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity } from 'react-native';
 
 export default function HomeScreen() {
+  const [texto, setTexto] = useState('');
+  const [lista, setLista] = useState<string[]>([]);
+  type ItensMarcados = { [key: number]: boolean };
+
+const [itensMarcados, setItensMarcados] = useState<ItensMarcados>(
+  lista.reduce((acc, _, index) => ({ ...acc, [index]: false }), {})
+);
+
+  function deletar(indexParameter: number) {
+    const listaFiltrada = lista.filter((_, index) => index !== indexParameter);
+    setLista(listaFiltrada);
+  }
+
+  const marcar = (index: number) => {
+    setItensMarcados((prevItensMarcados: { [key: number]: boolean }) => ({
+      ...prevItensMarcados,
+      [index]: true,
+    }));
+  };
+
+  const desmarcar = (index: number) => {
+    setItensMarcados((prevItensMarcados: { [key: number]: boolean }) => ({
+      ...prevItensMarcados,
+      [index]: false,
+    }));
+  };
+
+  function pegarTexto(entradaTexto: string) {
+    setTexto(entradaTexto);
+  }
+
+  function adcTexto() {
+  const novoIndex = lista.length;
+  setLista([...lista, texto]);
+  setItensMarcados({ ...itensMarcados, [novoIndex]: false });
+}
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <Text style={styles.titulo}>TODO LIST</Text>
+      <View style={styles.boxInput}>
+        <TextInput style={styles.input} onChangeText={pegarTexto} placeholder='digite algo'></TextInput>
+        <Button title='adicionar' onPress={adcTexto} />
+      </View>
+      <View style={styles.border}></View>
+      <View style={styles.lista}>
+        {lista.map((item, index) => (
+          <TouchableOpacity key={index} style={styles.listaRender} onPress={() => console.log(`Clicou no item ${index}`)}>
+            <Text style={[styles.item, itensMarcados[index] ? styles.itemMarcado : null]}>{item}</Text>
+            <Button title='marcar' onPress={() => marcar(index)} />
+            <Button title='desmarcar' onPress={() => desmarcar(index)} />
+            <Button title='remover' onPress={() => deletar(index)} />
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  titulo: {
+    fontSize: 40,
+    alignSelf: 'center',
+    marginTop: 50,
+  },
+  input: {
+    borderWidth: 1,
+    width: '70%',
+  },
+  boxInput: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    margin: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  border: {
+    borderBottomWidth: 1,
+    marginTop: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  lista: {
+    marginLeft: 20,
+    marginTop: 10,
+  },
+  listaRender: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: 20,
+  },
+  item: {
+    fontSize: 18,
+  },
+  itemMarcado: {
+    backgroundColor: 'green',
   },
 });

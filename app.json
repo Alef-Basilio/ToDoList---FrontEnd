@@ -37,6 +37,19 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "router": {
+      "root": {
+        "path": "app",
+        "type": "stack"
+      },
+      "routes": [
+        {
+          "name": "(tabs)",
+          "path": "app/(tabs)",
+          "type": "stack"
+        }
+      ]
     }
   }
 }
