@@ -3,14 +3,13 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "tsc": "tsc",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "build": "npm install && npm run tsc && react-native bundle --platform android --dev false --entry-file index.tsx --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/src/main/res"
+    "vercel-build": "expo export -p web"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
