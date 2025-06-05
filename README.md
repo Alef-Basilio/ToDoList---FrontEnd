@@ -2,7 +2,7 @@
 
 <p align="center">
   <p align="center">
-    <img src="./interface.jpeg" width="50%">
+    <img src="./interface.jpeg" height="100%">
   </p>
 </p>
 </br>
